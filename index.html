@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Hosting Panel - 5 vCPU / 10 GB RAM</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Server Panel</h1>
+            <span id="status-badge" class="offline">Offline</span>
+        </header>
+
+        <main>
+            <div class="control-box">
+                <h2>สถานะเซิร์ฟเวอร์</h2>
+                <p>เวอร์ชัน: <strong>Java 1.20.1 (Forge)</strong></p>
+                <p class="specs-info">ทรัพยากรระบบ: <strong>5 vCPU</strong></p>
+                
+                <!-- ส่วนเลือก RAM สูงสุด 10 GB -->
+                <div class="setting-group" id="setting-box">
+                    <label for="ram-select">กำหนดแรม (RAM Allocation):</label>
+                    <select id="ram-select">
+                        <option value="2048">2048 MB (2 GB)</option>
+                        <option value="4096" selected>4096 MB (4 GB)</option>
+                        <option value="8192">8192 MB (8 GB)</option>
+                        <option value="10240">10240 MB (10 GB)</option>
+                    </select>
+                </div>
+
+                <!-- แถบแสดงการใช้ทรัพยากร RAM / CPU -->
+                <div class="metrics-container">
+                    <div class="metric-item">
+                        <span>CPU Usage (5 vCPU): <strong id="cpu-text">0%</strong></span>
+                        <div class="progress-bar"><div id="cpu-fill" class="fill"></div></div>
+                    </div>
+                    <div class="metric-item">
+                        <span>RAM Usage: <strong id="ram-text">0 MB / 4096 MB</strong></span>
+                        <div class="progress-bar"><div id="ram-fill" class="fill"></div></div>
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    <button id="start-btn" onclick="startServer()">เปิดเซิร์ฟเวอร์</button>
+                    <button id="stop-btn" onclick="stopServer()" disabled>ปิดเซิร์ฟเวอร์</button>
+                </div>
+            </div>
+
+            <!-- ส่วนคอนโซลและช่องพิมพ์คำสั่ง -->
+            <div class="console-box">
+                <h3>Console Logs</h3>
+                <div id="console-output">รอนำเข้าคำสั่ง... เซิร์ฟเวอร์ยังไม่เปิด</div>
+                
+                <div class="command-input-box">
+                    <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all..." disabled onkeypress="checkEnter(event)">
+                    <button id="send-btn" onclick="sendCommand()" disabled>ส่ง</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 650px;
+    margin: auto;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 10px;
+}
+span.offline { background: #ef4444; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+span.online { background: #22c55e; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+
+.control-box, .console-box {
+    margin-top: 20px;
+}
+
+.specs-info {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+/* สไตล์ช่องเลือก RAM */
+.setting-group {
+    background: #0f172a;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+.setting-group select {
+    background: #1e293b;
+    color: white;
+    border: 1px solid #334155;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    cursor: pointer;
+}
+.setting-group select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+/* สไตล์แถบวัดทรัพยากร RAM/CPU */
+.metrics-container {
+    background: #0f172a;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.metric-item {
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+.metric-item:last-child { margin-bottom: 0; }
+.progress-bar {
+    background: #334155;
+    border-radius: 4px;
+    height: 8px;
+    width: 100%;
+    margin-top: 4px;
+    overflow: hidden;
+}
+.fill {
+    height: 100%;
+    width: 0%;
+    background: #38bdf8;
+    transition: width 0.4s ease;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#start-btn { background: #22c55e; color: white; }
+#stop-btn { background: #ef4444; color: white; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* สไตล์คอนโซลและช่องพิมพ์คำสั่ง */
+.console-box {
+    background: #090d16;
+    padding: 15px;
+    border-radius: 8px;
+}
+#console-output {
+    height: 140px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 13px;
+    color: #38bdf8;
+    border-bottom: 1px solid #1e293b;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+.command-input-box {
+    display: flex;
+    gap: 8px;
+}
+.command-input-box input {
+    flex: 1;
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    font-family: monospace;
+}
+.command-input-box input:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+.command-input-box button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.command-input-box button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }

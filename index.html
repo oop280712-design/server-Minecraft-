@@ -3,26 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Hosting Panel - 5 vCPU / 10 GB RAM</title>
+    <title>Server Hosting Panel - Advanced Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>My Server Panel</h1>
-            <span id="status-badge" class="offline">Offline</span>
-        </header>
+        
+        <!-- หน้าที่ 1: เข้าสู่ระบบ / สมัครสมาชิก (Auth Screen) -->
+        <div id="auth-screen" class="screen">
+            <header>
+                <h1>Server Hosting</h1>
+                <span class="badge-sub">Welcome</span>
+            </header>
+            <div class="auth-box">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
+                    <button class="tab-btn" onclick="switchAuthTab('register')">สมัครสมาชิก</button>
+                </div>
 
-        <main>
-            <div class="control-box">
-                <h2>สถานะเซิร์ฟเวอร์</h2>
-                <p>เวอร์ชัน: <strong>Java 1.20.1 (Forge)</strong></p>
-                <p class="specs-info">ทรัพยากรระบบ: <strong>5 vCPU</strong></p>
-                
-                <!-- ส่วนเลือก RAM สูงสุด 10 GB -->
-                <div class="setting-group" id="setting-box">
-                    <label for="ram-select">กำหนดแรม (RAM Allocation):</label>
-                    <select id="ram-select">
+                <div id="login-form" class="form-content">
+                    <h3>เข้าสู่ระบบ</h3>
+                    <input type="email" id="login-email" placeholder="อีเมลของคุณ">
+                    <input type="password" id="login-pass" placeholder="รหัสผ่าน">
+                    <button class="action-btn" onclick="handleAuth('login')">เข้าสู่ระบบ</button>
+                </div>
+
+                <div id="register-form" class="form-content" style="display: none;">
+                    <h3>สมัครสมาชิกใหม่</h3>
+                    <input type="text" id="reg-user" placeholder="ชื่อผู้ใช้งาน">
+                    <input type="email" id="reg-email" placeholder="อีเมลของคุณ">
+                    <input type="password" id="reg-pass" placeholder="รหัสผ่าน">
+                    <button class="action-btn" onclick="handleAuth('register')">สมัครสมาชิก</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 2: ระบบสร้างเซิร์ฟเวอร์ (Wizard) -->
+        <div id="wizard-screen" class="screen" style="display: none;">
+            <header>
+                <h1>สร้างเซิร์ฟเวอร์ใหม่</h1>
+                <span id="step-indicator" class="badge-sub">ขั้นตอนที่ 1 / 4</span>
+            </header>
+
+            <div class="wizard-box">
+                <div class="wizard-step" data-step="1">
+                    <h3>1. เลือกประเภทเกม (Minecraft Edition)</h3>
+                    <div class="option-cards">
+                        <div class="card" onclick="selectEdition('Java Edition', this)">
+                            <h4>Java Edition</h4>
+                            <p>รองรับ Mods, Plugins ขั้นสูง</p>
+                        </div>
+                        <div class="card" onclick="selectEdition('Bedrock Edition', this)">
+                            <h4>Bedrock Edition</h4>
+                            <p>มือถือ, Win10, คอนโซลเล่นร่วมกัน</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-step" data-step="2" style="display: none;">
+                    <h3>2. เลือกเวอร์ชันและระบบ (Loader)</h3>
+                    <select id="loader-select">
+                        <option value="Vanilla">Vanilla (ตัวเกมแท้มาตรฐาน)</option>
+                        <option value="Forge">Forge (รองรับ Mod ยอดนิยม)</option>
+                        <option value="NeoForge">NeoForge (รุ่นใหม่ล่าสุด)</option>
+                        <option value="Fabric">Fabric (ม็อดเบา โหลดไว)</option>
+                        <option value="Paper">Paper / Spigot (เน้นปลั๊กอิน)</option>
+                        <option value="Crossplay">Java + Bedrock Crossplay (Geyser)</option>
+                    </select>
+                </div>
+
+                <div class="wizard-step" data-step="3" style="display: none;">
+                    <h3>3. เลือกแพ็กเกจฮาร์ดแวร์</h3>
+                    <div class="specs-preview">
+                        <p>พลังประมวลผล: <strong>5 vCPU (High Performance)</strong></p>
+                    </div>
+                    <label for="wizard-ram">กำหนดแรมสูงสุด (RAM Allocation):</label>
+                    <select id="wizard-ram">
                         <option value="2048">2048 MB (2 GB)</option>
                         <option value="4096" selected>4096 MB (4 GB)</option>
                         <option value="8192">8192 MB (8 GB)</option>
@@ -30,35 +86,127 @@
                     </select>
                 </div>
 
-                <!-- แถบแสดงการใช้ทรัพยากร RAM / CPU -->
-                <div class="metrics-container">
-                    <div class="metric-item">
-                        <span>CPU Usage (5 vCPU): <strong id="cpu-text">0%</strong></span>
-                        <div class="progress-bar"><div id="cpu-fill" class="fill"></div></div>
-                    </div>
-                    <div class="metric-item">
-                        <span>RAM Usage: <strong id="ram-text">0 MB / 4096 MB</strong></span>
-                        <div class="progress-bar"><div id="ram-fill" class="fill"></div></div>
+                <div class="wizard-step" data-step="4" style="display: none;">
+                    <h3>4. ตั้งชื่อเซิร์ฟเวอร์และยืนยัน</h3>
+                    <input type="text" id="server-name-input" placeholder="เช่น My-Awesome-Server">
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms-check">
+                        <label for="terms-check">ยอมรับเงื่อนไขการให้บริการและนโยบายเซิร์ฟเวอร์</label>
                     </div>
                 </div>
 
-                <div class="buttons">
-                    <button id="start-btn" onclick="startServer()">เปิดเซิร์ฟเวอร์</button>
-                    <button id="stop-btn" onclick="stopServer()" disabled>ปิดเซิร์ฟเวอร์</button>
+                <div class="wizard-buttons">
+                    <button id="prev-btn" onclick="prevStep()" style="display: none;">ย้อนกลับ</button>
+                    <button id="next-btn" onclick="nextStep()">ถัดไป</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 3: แดชบอร์ดหลักพร้อมระบบเมนูย่อย (Dashboard with Tabs) -->
+        <div id="dashboard-screen" class="screen" style="display: none;">
+            <header class="dashboard-header">
+                <div>
+                    <h1 id="panel-server-name">My Server</h1>
+                    <span id="panel-server-info" class="badge-sub">Java | Forge | 4 GB RAM</span>
+                </div>
+                <span id="status-badge" class="offline">Offline</span>
+            </header>
+
+            <!-- แถบเมนูด้านบน (Navigation Tabs) -->
+            <div class="nav-tabs">
+                <button class="nav-btn active" onclick="switchTab('server')">Server</button>
+                <button class="nav-btn" onclick="switchTab('console')">Console</button>
+                <button class="nav-btn" onclick="switchTab('software')">Software</button>
+                <button class="nav-btn" onclick="switchTab('players')">Players</button>
+            </div>
+
+            <!-- 1. เมนู Server (เปิด-ปิด, รีเซ็ต, ทรัพยากร) -->
+            <div id="tab-server" class="tab-content">
+                <div class="control-box">
+                    <h2>สถานะระบบ</h2>
+                    <p class="specs-info">ฮาร์ดแวร์: <strong>5 vCPU</strong> | แรมสูงสุด: <strong id="display-max-ram">4096 MB</strong></p>
+                    
+                    <div class="metrics-container">
+                        <div class="metric-item">
+                            <span>CPU Usage (5 vCPU): <strong id="cpu-text">0%</strong></span>
+                            <div class="progress-bar"><div id="cpu-fill" class="fill"></div></div>
+                        </div>
+                        <div class="metric-item">
+                            <span>RAM Usage: <strong id="ram-text">0 MB / 4096 MB</strong></span>
+                            <div class="progress-bar"><div id="ram-fill" class="fill"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="buttons server-actions">
+                        <button id="start-btn" onclick="startServer()">เปิดเซิร์ฟเวอร์</button>
+                        <button id="stop-btn" onclick="stopServer()" disabled>ปิดเซิร์ฟเวอร์</button>
+                        <button id="reset-btn" class="danger-btn" onclick="resetServer()">รีเซ็ตเซิร์ฟเวอร์</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- ส่วนคอนโซลและช่องพิมพ์คำสั่ง -->
-            <div class="console-box">
-                <h3>Console Logs</h3>
-                <div id="console-output">รอนำเข้าคำสั่ง... เซิร์ฟเวอร์ยังไม่เปิด</div>
-                
-                <div class="command-input-box">
-                    <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all..." disabled onkeypress="checkEnter(event)">
-                    <button id="send-btn" onclick="sendCommand()" disabled>ส่ง</button>
+            <!-- 2. เมนู Console (หน้าจอควบคุมคำสั่ง) -->
+            <div id="tab-console" class="tab-content" style="display: none;">
+                <div class="console-box">
+                    <h3>Console Logs</h3>
+                    <div id="console-output">เซิร์ฟเวอร์พร้อมใช้งาน กดปุ่มเปิดเพื่อเริ่มระบบ...</div>
+                    
+                    <div class="command-input-box">
+                        <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all..." disabled onkeypress="checkEnter(event)">
+                        <button id="send-btn" onclick="sendCommand()" disabled>ส่ง</button>
+                    </div>
                 </div>
             </div>
-        </main>
+
+            <!-- 3. เมนู Software (เลือกเวอร์ชันและตัวโหลดม็อดครบทุกแบบ) -->
+            <div id="tab-software" class="tab-content" style="display: none;">
+                <div class="software-box">
+                    <h3>จัดการซอฟต์แวร์และเวอร์ชัน</h3>
+                    <p class="specs-info">เลือกเปลี่ยนเวอร์ชัน Minecraft หรือตัวขับเคลื่อนเซิร์ฟเวอร์ (ต้องปิดเซิร์ฟเวอร์ก่อนเปลี่ยน)</p>
+                    
+                    <label>ประเภทซอฟต์แวร์ (Software Type):</label>
+                    <select id="sw-type" onchange="updateVersionOptions()">
+                        <option value="Vanilla">Vanilla (ตัวเกมแท้)</option>
+                        <option value="Forge">Forge (Mod Loader)</option>
+                        <option value="NeoForge">NeoForge (Mod Loader รุ่นใหม่)</option>
+                        <option value="Fabric">Fabric (Mod Loader น้ำหนักเบา)</option>
+                        <option value="Paper">Paper / Spigot (Plugin Server)</option>
+                        <option value="Crossplay">Java + Bedrock Crossplay (Geyser)</option>
+                    </select>
+
+                    <label style="margin-top: 15px; display: block;">เลือกเวอร์ชัน (Version):</label>
+                    <select id="sw-version">
+                        <!-- รายการเวอร์ชันจะเปลี่ยนไปตามประเภทซอฟต์แวร์ -->
+                    </select>
+
+                    <button class="action-btn" style="margin-top: 20px;" onclick="changeSoftwareVersion()">บันทึกและติดตั้งซอฟต์แวร์ใหม่</button>
+                </div>
+            </div>
+
+            <!-- 4. เมนู Players (จัดการผู้เล่น OP, แบน, ปลดแบน) -->
+            <div id="tab-players" class="tab-content" style="display: none;">
+                <div class="players-box">
+                    <h3>จัดการผู้เล่น (Player Management)</h3>
+                    
+                    <div class="player-action-group">
+                        <input type="text" id="target-player" placeholder="ชื่อผู้เล่น (Username)">
+                        <div class="p-buttons">
+                            <button class="op-btn" onclick="managePlayer('op')">ให้สิทธิ์ OP</button>
+                            <button class="ban-btn" onclick="managePlayer('ban')">แบนผู้เล่น</button>
+                        </div>
+                    </div>
+
+                    <div class="banned-list-container">
+                        <h4>รายชื่อผู้เล่นที่ถูกแบน (Banned Players):</h4>
+                        <ul id="banned-list">
+                            <li>ไม่มีผู้เล่นที่ถูกแบน</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <script src="script.js"></script>

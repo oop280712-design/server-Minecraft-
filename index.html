@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Hosting Panel - Advanced Dashboard</title>
+    <title>Server Hosting Panel - Multi Server & Installer</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         
-        <!-- หน้าที่ 1: เข้าสู่ระบบ / สมัครสมาชิก (Auth Screen) -->
+        <!-- หน้าที่ 1: เข้าสู่ระบบ / สมัครสมาชิก -->
         <div id="auth-screen" class="screen">
             <header>
                 <h1>Server Hosting</h1>
@@ -20,25 +20,38 @@
                     <button class="tab-btn active" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
                     <button class="tab-btn" onclick="switchAuthTab('register')">สมัครสมาชิก</button>
                 </div>
-
                 <div id="login-form" class="form-content">
                     <h3>เข้าสู่ระบบ</h3>
                     <input type="email" id="login-email" placeholder="อีเมลของคุณ">
                     <input type="password" id="login-pass" placeholder="รหัสผ่าน">
-                    <button class="action-btn" onclick="handleAuth('login')">เข้าสู่ระบบ</button>
+                    <button class="action-btn" onclick="handleAuth()">เข้าสู่ระบบ</button>
                 </div>
-
                 <div id="register-form" class="form-content" style="display: none;">
                     <h3>สมัครสมาชิกใหม่</h3>
                     <input type="text" id="reg-user" placeholder="ชื่อผู้ใช้งาน">
                     <input type="email" id="reg-email" placeholder="อีเมลของคุณ">
                     <input type="password" id="reg-pass" placeholder="รหัสผ่าน">
-                    <button class="action-btn" onclick="handleAuth('register')">สมัครสมาชิก</button>
+                    <button class="action-btn" onclick="handleAuth()">สมัครสมาชิก</button>
                 </div>
             </div>
         </div>
 
-        <!-- หน้าที่ 2: ระบบสร้างเซิร์ฟเวอร์ (Wizard) -->
+        <!-- หน้าที่ 2: หน้ารายการเซิร์ฟเวอร์ทั้งหมด (Server List Dashboard) -->
+        <div id="server-list-screen" class="screen" style="display: none;">
+            <header>
+                <div>
+                    <h1>เซิร์ฟเวอร์ของคุณ</h1>
+                    <span id="server-count-badge" class="badge-sub">คุณมีทั้งหมด 0 เซิร์ฟเวอร์</span>
+                </div>
+                <button class="create-new-btn" onclick="goToWizard()">+ สร้างเซิร์ฟเวอร์ใหม่</button>
+            </header>
+
+            <div class="server-list-container" id="server-grid">
+                <!-- รายการเซิร์ฟเวอร์จะถูกเพิ่มเข้ามาตรงนี้อัตโนมัติ -->
+            </div>
+        </div>
+
+        <!-- หน้าที่ 3: ระบบสร้างเซิร์ฟเวอร์ (Wizard) -->
         <div id="wizard-screen" class="screen" style="display: none;">
             <header>
                 <h1>สร้างเซิร์ฟเวอร์ใหม่</h1>
@@ -49,7 +62,7 @@
                 <div class="wizard-step" data-step="1">
                     <h3>1. เลือกประเภทเกม (Minecraft Edition)</h3>
                     <div class="option-cards">
-                        <div class="card" onclick="selectEdition('Java Edition', this)">
+                        <div class="card selected" onclick="selectEdition('Java Edition', this)">
                             <h4>Java Edition</h4>
                             <p>รองรับ Mods, Plugins ขั้นสูง</p>
                         </div>
@@ -63,11 +76,11 @@
                 <div class="wizard-step" data-step="2" style="display: none;">
                     <h3>2. เลือกเวอร์ชันและระบบ (Loader)</h3>
                     <select id="loader-select">
-                        <option value="Vanilla">Vanilla (ตัวเกมแท้มาตรฐาน)</option>
-                        <option value="Forge">Forge (รองรับ Mod ยอดนิยม)</option>
-                        <option value="NeoForge">NeoForge (รุ่นใหม่ล่าสุด)</option>
-                        <option value="Fabric">Fabric (ม็อดเบา โหลดไว)</option>
-                        <option value="Paper">Paper / Spigot (เน้นปลั๊กอิน)</option>
+                        <option value="Vanilla">Vanilla (ตัวเกมแท้)</option>
+                        <option value="Forge">Forge (Mod Loader)</option>
+                        <option value="NeoForge">NeoForge (Mod Loader รุ่นใหม่)</option>
+                        <option value="Fabric">Fabric (Mod Loader น้ำหนักเบา)</option>
+                        <option value="Paper">Paper / Spigot (Plugin Server)</option>
                         <option value="Crossplay">Java + Bedrock Crossplay (Geyser)</option>
                     </select>
                 </div>
@@ -88,9 +101,9 @@
 
                 <div class="wizard-step" data-step="4" style="display: none;">
                     <h3>4. ตั้งชื่อเซิร์ฟเวอร์และยืนยัน</h3>
-                    <input type="text" id="server-name-input" placeholder="เช่น My-Awesome-Server">
+                    <input type="text" id="server-name-input" placeholder="เช่น My-Survival-Server">
                     <div class="terms-group">
-                        <input type="checkbox" id="terms-check">
+                        <input type="checkbox" id="terms-check" checked>
                         <label for="terms-check">ยอมรับเงื่อนไขการให้บริการและนโยบายเซิร์ฟเวอร์</label>
                     </div>
                 </div>
@@ -102,17 +115,27 @@
             </div>
         </div>
 
-        <!-- หน้าที่ 3: แดชบอร์ดหลักพร้อมระบบเมนูย่อย (Dashboard with Tabs) -->
+        <!-- หน้าที่ 4: หน้าจอแสดงสถานะกำลังติดตั้ง (Installing Screen) -->
+        <div id="installing-screen" class="screen" style="display: none; text-align: center; padding: 40px 0;">
+            <h2>กำลังติดตั้งเซิร์ฟเวอร์...</h2>
+            <p id="install-status-text" class="specs-info">กำลังเตรียมไฟล์ระบบและจัดสรรทรัพยากร 5 vCPU...</p>
+            <div class="progress-bar" style="margin: 20px 0; height: 12px;">
+                <div id="install-fill" class="fill" style="width: 0%;"></div>
+            </div>
+            <strong id="install-percent">0%</strong>
+        </div>
+
+        <!-- หน้าที่ 5: แดชบอร์ดจัดการเซิร์ฟเวอร์ (Dashboard Panel) -->
         <div id="dashboard-screen" class="screen" style="display: none;">
             <header class="dashboard-header">
                 <div>
-                    <h1 id="panel-server-name">My Server</h1>
+                    <button class="back-list-btn" onclick="backToServerList()">⬅ กลับหน้าเซิร์ฟเวอร์ทั้งหมด</button>
+                    <h1 id="panel-server-name" style="margin-top: 5px;">My Server</h1>
                     <span id="panel-server-info" class="badge-sub">Java | Forge | 4 GB RAM</span>
                 </div>
                 <span id="status-badge" class="offline">Offline</span>
             </header>
 
-            <!-- แถบเมนูด้านบน (Navigation Tabs) -->
             <div class="nav-tabs">
                 <button class="nav-btn active" onclick="switchTab('server')">Server</button>
                 <button class="nav-btn" onclick="switchTab('console')">Console</button>
@@ -120,12 +143,29 @@
                 <button class="nav-btn" onclick="switchTab('players')">Players</button>
             </div>
 
-            <!-- 1. เมนู Server (เปิด-ปิด, รีเซ็ต, ทรัพยากร) -->
+            <!-- Tab 1: Server -->
             <div id="tab-server" class="tab-content">
                 <div class="control-box">
                     <h2>สถานะระบบ</h2>
                     <p class="specs-info">ฮาร์ดแวร์: <strong>5 vCPU</strong> | แรมสูงสุด: <strong id="display-max-ram">4096 MB</strong></p>
                     
+                    <div class="connection-box">
+                        <div class="connection-item">
+                            <span id="label-ip-title">Server IP (Address):</span>
+                            <div class="copy-row">
+                                <input type="text" id="server-ip-val" value="" readonly>
+                                <button class="copy-btn" onclick="copyText('server-ip-val', 'คัดลอก IP เรียบร้อย!')">คัดลอก IP</button>
+                            </div>
+                        </div>
+                        <div class="connection-item" id="port-box-container" style="display: none;">
+                            <span>Server Port (Bedrock):</span>
+                            <div class="copy-row">
+                                <input type="text" id="server-port-val" value="19132" readonly>
+                                <button class="copy-btn" onclick="copyText('server-port-val', 'คัดลอก Port เรียบร้อย!')">คัดลอก Port</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="metrics-container">
                         <div class="metric-item">
                             <span>CPU Usage (5 vCPU): <strong id="cpu-text">0%</strong></span>
@@ -145,12 +185,11 @@
                 </div>
             </div>
 
-            <!-- 2. เมนู Console (หน้าจอควบคุมคำสั่ง) -->
+            <!-- Tab 2: Console -->
             <div id="tab-console" class="tab-content" style="display: none;">
                 <div class="console-box">
                     <h3>Console Logs</h3>
                     <div id="console-output">เซิร์ฟเวอร์พร้อมใช้งาน กดปุ่มเปิดเพื่อเริ่มระบบ...</div>
-                    
                     <div class="command-input-box">
                         <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all..." disabled onkeypress="checkEnter(event)">
                         <button id="send-btn" onclick="sendCommand()" disabled>ส่ง</button>
@@ -158,13 +197,12 @@
                 </div>
             </div>
 
-            <!-- 3. เมนู Software (เลือกเวอร์ชันและตัวโหลดม็อดครบทุกแบบ) -->
+            <!-- Tab 3: Software -->
             <div id="tab-software" class="tab-content" style="display: none;">
                 <div class="software-box">
                     <h3>จัดการซอฟต์แวร์และเวอร์ชัน</h3>
-                    <p class="specs-info">เลือกเปลี่ยนเวอร์ชัน Minecraft หรือตัวขับเคลื่อนเซิร์ฟเวอร์ (ต้องปิดเซิร์ฟเวอร์ก่อนเปลี่ยน)</p>
-                    
-                    <label>ประเภทซอฟต์แวร์ (Software Type):</label>
+                    <p class="specs-info">เลือกเปลี่ยนเวอร์ชัน Minecraft หรือตัวขับเคลื่อนเซิร์ฟเวอร์</p>
+                    <label>ประเภทซอฟต์แวร์:</label>
                     <select id="sw-type" onchange="updateVersionOptions()">
                         <option value="Vanilla">Vanilla (ตัวเกมแท้)</option>
                         <option value="Forge">Forge (Mod Loader)</option>
@@ -173,21 +211,16 @@
                         <option value="Paper">Paper / Spigot (Plugin Server)</option>
                         <option value="Crossplay">Java + Bedrock Crossplay (Geyser)</option>
                     </select>
-
-                    <label style="margin-top: 15px; display: block;">เลือกเวอร์ชัน (Version):</label>
-                    <select id="sw-version">
-                        <!-- รายการเวอร์ชันจะเปลี่ยนไปตามประเภทซอฟต์แวร์ -->
-                    </select>
-
+                    <label style="margin-top: 15px; display: block;">เลือกเวอร์ชัน:</label>
+                    <select id="sw-version"></select>
                     <button class="action-btn" style="margin-top: 20px;" onclick="changeSoftwareVersion()">บันทึกและติดตั้งซอฟต์แวร์ใหม่</button>
                 </div>
             </div>
 
-            <!-- 4. เมนู Players (จัดการผู้เล่น OP, แบน, ปลดแบน) -->
+            <!-- Tab 4: Players -->
             <div id="tab-players" class="tab-content" style="display: none;">
                 <div class="players-box">
                     <h3>จัดการผู้เล่น (Player Management)</h3>
-                    
                     <div class="player-action-group">
                         <input type="text" id="target-player" placeholder="ชื่อผู้เล่น (Username)">
                         <div class="p-buttons">
@@ -195,16 +228,12 @@
                             <button class="ban-btn" onclick="managePlayer('ban')">แบนผู้เล่น</button>
                         </div>
                     </div>
-
                     <div class="banned-list-container">
-                        <h4>รายชื่อผู้เล่นที่ถูกแบน (Banned Players):</h4>
-                        <ul id="banned-list">
-                            <li>ไม่มีผู้เล่นที่ถูกแบน</li>
-                        </ul>
+                        <h4>รายชื่อผู้เล่นที่ถูกแบน:</h4>
+                        <ul id="banned-list"><li>ไม่มีผู้เล่นที่ถูกแบน</li></ul>
                     </div>
                 </div>
             </div>
-
         </div>
 
     </div>

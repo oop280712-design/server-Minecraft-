@@ -2,7 +2,7 @@
 let serverConfig = {
     edition: 'Java Edition',
     loader: 'Forge',
-    version: '1.20.1',
+    version: '26.3 (Latest)',
     ram: 4096,
     name: 'My-Server'
 };
@@ -11,14 +11,33 @@ let currentStep = 1;
 let metricsInterval = null;
 let bannedPlayers = []; // เก็บรายชื่อผู้เล่นที่ถูกแบน
 
-// ฐานข้อมูลเวอร์ชันแยกตามประเภทซอฟต์แวร์
+// ฐานข้อมูลเวอร์ชันอัปเดตล่าสุด (รวม Forge 26.3 และเวอร์ชันปัจจุบันทั้งหมด)
 const softwareVersions = {
-    Vanilla: ['1.21.4', '1.20.4', '1.20.1', '1.19.4', '1.18.2', '1.16.5'],
-    Forge: ['1.20.1', '1.19.2', '1.18.2', '1.16.5', '1.12.2'],
-    NeoForge: ['1.21.4', '1.20.4', '1.20.2'],
-    Fabric: ['1.21.4', '1.20.4', '1.20.1', '1.19.4'],
-    Paper: ['1.21.4', '1.20.4', '1.20.1', '1.19.4'],
-    Crossplay: ['1.20.x - 1.21.x (GeyserMC Support)']
+    Vanilla: [
+        '26.3', '26.2', '26.1.2', '26.1.1', '26.1',
+        '1.21.5', '1.21.4', '1.21.3', '1.21.2', '1.21.1', '1.21',
+        '1.20.6', '1.20.5', '1.20.4', '1.20.3', '1.20.2', '1.20.1', '1.20',
+        '1.19.4', '1.19.3', '1.19.2', '1.18.2', '1.16.5', '1.12.2', '1.8.9', '1.7.10', '1.0'
+    ],
+    Forge: [
+        '26.3 (Latest)', '26.2', '26.1', 
+        '1.21.5', '1.21.4', '1.21.1', '1.20.6', '1.20.4', '1.20.1', 
+        '1.19.4', '1.19.2', '1.18.2', '1.16.5', '1.12.2', '1.8.9', '1.7.10'
+    ],
+    NeoForge: [
+        '26.3', '26.2', '26.1', '1.21.5', '1.21.4', '1.20.6', '1.20.4'
+    ],
+    Fabric: [
+        '26.3', '26.1', '1.21.5', '1.21.4', '1.20.6', '1.20.1', '1.19.4', '1.18.2'
+    ],
+    Paper: [
+        '26.3', '26.1', '1.21.5', '1.21.4', '1.20.6', '1.20.1', '1.19.4', '1.12.2'
+    ],
+    Crossplay: [
+        '26.x - GeyserMC Support (Latest)',
+        '1.21.x - GeyserMC Support',
+        '1.20.x - GeyserMC Support'
+    ]
 };
 
 
@@ -100,15 +119,29 @@ function finishWizard() {
     initSoftwareOptions();
 }
 
+// อัปเดตข้อมูลบนหัว Dashboard และจัดการแสดงผล IP/Port (Java vs Bedrock/Crossplay)
 function updateDashboardHeader() {
     document.getElementById('panel-server-name').textContent = serverConfig.name;
-    document.getElementById('panel-server-info').textContent = `${serverConfig.edition} | ${serverConfig.loader} (${serverConfig.version || '1.20.1'}) | ${serverConfig.ram / 1024} GB RAM`;
+    document.getElementById('panel-server-info').textContent = `${serverConfig.edition} \vert{}${serverConfig.loader} (${serverConfig.version \vert{}\vert{} '26.3'}) \vert{}${serverConfig.ram / 1024} GB RAM`;
     document.getElementById('display-max-ram').textContent = `${serverConfig.ram} MB`;
     document.getElementById('ram-text').textContent = `0 MB / ${serverConfig.ram} MB`;
+
+    // สร้าง IP จำลองจากชื่อเซิร์ฟเวอร์
+    let formattedIp = serverConfig.name.toLowerCase().replace(/\s+/g, '') + '.hosting.net';
+    document.getElementById('server-ip-val').value = formattedIp;
+
+    // ถ้าเป็น Bedrock หรือ Crossplay ให้แสดงช่อง Port เพิ่มขึ้นมา
+    const portContainer = document.getElementById('port-box-container');
+    if (serverConfig.edition === 'Bedrock Edition' || serverConfig.loader === 'Crossplay') {
+        portContainer.style.display = 'block';
+        document.getElementById('server-port-val').value = serverConfig.edition === 'Bedrock Edition' ? '19132' : '25565 (Bedrock: 19132)';
+    } else {
+        portContainer.style.display = 'none'; // Java ล้วนใช้แค่อีพีอย่างเดียว
+    }
 }
 
 
-// --- 3. ระบบสลับแท็บเมนูดดานบน (Navigation Tabs) ---
+// --- 3. ระบบสลับแท็บเมนูด้านบน (Navigation Tabs) ---
 function switchTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -195,7 +228,21 @@ function updateBannedList() {
 }
 
 
-// --- 6. ระบบควบคุมเซิร์ฟเวอร์, คอนโซล และทรัพยากร (Server & Console) ---
+// --- 6. ฟังก์ชันคัดลอก IP / Port ---
+function copyText(elementId, successMessage) {
+    let copyText = document.getElementById(elementId);
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+
+    navigator.clipboard.writeText(copyText.value).then(() => {
+        alert(successMessage);
+    }).catch(err => {
+        alert("คัดลอกสำเร็จ: " + copyText.value);
+    });
+}
+
+
+// --- 7. ระบบควบคุมเซิร์ฟเวอร์, คอนโซล และทรัพยากร (Server & Console) ---
 const statusBadge = document.getElementById('status-badge');
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
@@ -208,7 +255,7 @@ const ramText = document.getElementById('ram-text');
 const ramFill = document.getElementById('ram-fill');
 
 function log(message) {
-    consoleOutput.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${message}`;
+    consoleOutput.innerHTML += `<br>[${new Date().toLocaleTimeString()}]${message}`;
     consoleOutput.scrollTop = consoleOutput.scrollHeight;
 }
 
@@ -237,74 +284,4 @@ function startServer() {
     startBtn.disabled = true;
     statusBadge.textContent = "Starting...";
     statusBadge.className = "offline";
-    log(`กำลังเปิดเซิร์ฟเวอร์ [${serverConfig.name}] (${serverConfig.loader} - ${serverConfig.version || '1.20.1'})...`);
-
-    setTimeout(() => {
-        log(`Loading libraries & environment on 5 vCPU / ${serverConfig.ram} MB RAM...`);
-    }, 1500);
-
-    setTimeout(() => {
-        statusBadge.textContent = "Online";
-        statusBadge.className = "online";
-        stopBtn.disabled = false;
-        commandInput.disabled = false;
-        sendBtn.disabled = false;
-        log(`Server started successfully on port 25565!`);
-        startMetricsSimulation();
-    }, 3500);
-}
-
-function stopServer() {
-    startBtn.disabled = true;
-    stopBtn.disabled = true;
-    commandInput.disabled = true;
-    sendBtn.disabled = true;
-    statusBadge.textContent = "Stopping...";
-    log("กำลังบันทึกข้อมูลโลกและปิดเซิร์ฟเวอร์อย่างปลอดภัย...");
-    stopMetricsSimulation();
-
-    setTimeout(() => {
-        statusBadge.textContent = "Offline";
-        statusBadge.className = "offline";
-        startBtn.disabled = false;
-        log("Server closed safely.");
-    }, 2000);
-}
-
-function resetServer() {
-    if (confirm("คุณแน่ใจหรือไม่ที่จะรีเซ็ตเซิร์ฟเวอร์? ข้อมูลและการตั้งค่าทั้งหมดจะถูกล้างใหม่!")) {
-        stopMetricsSimulation();
-        statusBadge.textContent = "Offline";
-        statusBadge.className = "offline";
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        commandInput.disabled = true;
-        sendBtn.disabled = true;
-        consoleOutput.innerHTML = "Server has been reset to factory defaults.";
-        alert("รีเซ็ตเซิร์ฟเวอร์เรียบร้อยแล้ว");
-    }
-}
-
-function sendCommand() {
-    let cmd = commandInput.value.trim();
-    if (cmd === "") return;
-    log(`> ${cmd}`);
-
-    if (cmd === "/help") {
-        log("Available commands: /help, /save-all, /time set day, /op [player]");
-    } else if (cmd === "/save-all") {
-        log("Saved the game successfully.");
-    } else if (cmd.startsWith("/op ")) {
-        let playerName = cmd.split(" ")[1];
-        log(`Made ${playerName} a server operator`);
-    } else {
-        log(`Executed command: ${cmd}`);
-    }
-    commandInput.value = "";
-}
-
-function checkEnter(event) {
-    if (event.key === "Enter") {
-        sendCommand();
-    }
-}
+    log(`กำลังเปิดเซิร์ฟเวอร์ [${serverConfig.name}] (${serverConfig.loader} -${serverConfig.version || '26.3

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Hosting Panel - Multi Server & Installer</title>
+    <title>Server Hosting Panel - Aternos Style</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         
-        <!-- หน้าที่ 1: เข้าสู่ระบบ / สมัครสมาชิก -->
+        <!-- 1. Auth Screen -->
         <div id="auth-screen" class="screen">
             <header>
                 <h1>Server Hosting</h1>
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <!-- หน้าที่ 2: หน้ารายการเซิร์ฟเวอร์ทั้งหมด (Server List Dashboard) -->
+        <!-- 2. Server List Dashboard -->
         <div id="server-list-screen" class="screen" style="display: none;">
             <header>
                 <div>
@@ -45,19 +45,15 @@
                 </div>
                 <button class="create-new-btn" onclick="goToWizard()">+ สร้างเซิร์ฟเวอร์ใหม่</button>
             </header>
-
-            <div class="server-list-container" id="server-grid">
-                <!-- รายการเซิร์ฟเวอร์จะถูกเพิ่มเข้ามาตรงนี้อัตโนมัติ -->
-            </div>
+            <div class="server-list-container" id="server-grid"></div>
         </div>
 
-        <!-- หน้าที่ 3: ระบบสร้างเซิร์ฟเวอร์ (Wizard) -->
+        <!-- 3. Wizard สร้างเซิร์ฟเวอร์ -->
         <div id="wizard-screen" class="screen" style="display: none;">
             <header>
                 <h1>สร้างเซิร์ฟเวอร์ใหม่</h1>
                 <span id="step-indicator" class="badge-sub">ขั้นตอนที่ 1 / 4</span>
             </header>
-
             <div class="wizard-box">
                 <div class="wizard-step" data-step="1">
                     <h3>1. เลือกประเภทเกม (Minecraft Edition)</h3>
@@ -72,7 +68,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="wizard-step" data-step="2" style="display: none;">
                     <h3>2. เลือกเวอร์ชันและระบบ (Loader)</h3>
                     <select id="loader-select">
@@ -84,7 +79,6 @@
                         <option value="Crossplay">Java + Bedrock Crossplay (Geyser)</option>
                     </select>
                 </div>
-
                 <div class="wizard-step" data-step="3" style="display: none;">
                     <h3>3. เลือกแพ็กเกจฮาร์ดแวร์</h3>
                     <div class="specs-preview">
@@ -98,7 +92,6 @@
                         <option value="10240">10240 MB (10 GB)</option>
                     </select>
                 </div>
-
                 <div class="wizard-step" data-step="4" style="display: none;">
                     <h3>4. ตั้งชื่อเซิร์ฟเวอร์และยืนยัน</h3>
                     <input type="text" id="server-name-input" placeholder="เช่น My-Survival-Server">
@@ -107,7 +100,6 @@
                         <label for="terms-check">ยอมรับเงื่อนไขการให้บริการและนโยบายเซิร์ฟเวอร์</label>
                     </div>
                 </div>
-
                 <div class="wizard-buttons">
                     <button id="prev-btn" onclick="prevStep()" style="display: none;">ย้อนกลับ</button>
                     <button id="next-btn" onclick="nextStep()">ถัดไป</button>
@@ -115,7 +107,7 @@
             </div>
         </div>
 
-        <!-- หน้าที่ 4: หน้าจอแสดงสถานะกำลังติดตั้ง (Installing Screen) -->
+        <!-- 4. หน้าจอติดตั้ง (Installing) -->
         <div id="installing-screen" class="screen" style="display: none; text-align: center; padding: 40px 0;">
             <h2>กำลังติดตั้งเซิร์ฟเวอร์...</h2>
             <p id="install-status-text" class="specs-info">กำลังเตรียมไฟล์ระบบและจัดสรรทรัพยากร 5 vCPU...</p>
@@ -125,7 +117,7 @@
             <strong id="install-percent">0%</strong>
         </div>
 
-        <!-- หน้าที่ 5: แดชบอร์ดจัดการเซิร์ฟเวอร์ (Dashboard Panel) -->
+        <!-- 5. แดชบอร์ดหลัก (Dashboard) -->
         <div id="dashboard-screen" class="screen" style="display: none;">
             <header class="dashboard-header">
                 <div>
@@ -136,9 +128,11 @@
                 <span id="status-badge" class="offline">Offline</span>
             </header>
 
+            <!-- Navbar Tabs เพิ่ม Files เข้ามา -->
             <div class="nav-tabs">
                 <button class="nav-btn active" onclick="switchTab('server')">Server</button>
                 <button class="nav-btn" onclick="switchTab('console')">Console</button>
+                <button class="nav-btn" onclick="switchTab('files')">Files</button>
                 <button class="nav-btn" onclick="switchTab('software')">Software</button>
                 <button class="nav-btn" onclick="switchTab('players')">Players</button>
             </div>
@@ -185,19 +179,52 @@
                 </div>
             </div>
 
-            <!-- Tab 2: Console -->
+            <!-- Tab 2: Console (สไตล์ Aternos) -->
             <div id="tab-console" class="tab-content" style="display: none;">
-                <div class="console-box">
-                    <h3>Console Logs</h3>
-                    <div id="console-output">เซิร์ฟเวอร์พร้อมใช้งาน กดปุ่มเปิดเพื่อเริ่มระบบ...</div>
+                <div class="console-box aternos-console">
+                    <div class="console-header-bar">
+                        <span>Console Logs (Aternos Live Stream)</span>
+                        <span id="console-status-dot" class="dot-offline"></span>
+                    </div>
+                    <div id="console-output">[Aternos Panel] Initializing server environment...<br>[Aternos Daemon] Allocated 5 vCPU and assigned container node.</div>
                     <div class="command-input-box">
-                        <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all..." disabled onkeypress="checkEnter(event)">
+                        <input type="text" id="command-input" placeholder="พิมพ์คำสั่ง เช่น /help, /save-all, /op..." disabled onkeypress="checkEnter(event)">
                         <button id="send-btn" onclick="sendCommand()" disabled>ส่ง</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 3: Software -->
+            <!-- Tab 3: Files Manager (3 ไฟล์หลัก) -->
+            <div id="tab-files" class="tab-content" style="display: none;">
+                <div class="files-box">
+                    <h3>ตัวจัดการไฟล์เซิร์ฟเวอร์ (File Manager)</h3>
+                    <p class="specs-info">เลือกไฟล์เพื่อดูหรือแก้ไขการตั้งค่าหลักของเซิร์ฟเวอร์</p>
+                    
+                    <div class="file-list">
+                        <div class="file-item" onclick="openFileEditor('server.properties')">
+                            <span>📄 server.properties</span>
+                            <small>ตั้งค่าพอร์ต, โหมดเกม, แบนผู้เล่นสูงสุด</small>
+                        </div>
+                        <div class="file-item" onclick="openFileEditor('eula.txt')">
+                            <span>📄 eula.txt</span>
+                            <small>ยอมรับข้อตกลงการใช้งาน Mojang EULA</small>
+                        </div>
+                        <div class="file-item" onclick="openFileEditor('ops.json')">
+                            <span>📄 ops.json</span>
+                            <small>รายชื่อแอดมินเซิร์ฟเวอร์ (Operator List)</small>
+                        </div>
+                    </div>
+
+                    <!-- Editor Modal / Box สำหรับแก้ไฟล์ -->
+                    <div id="file-editor-container" style="display: none; margin-top: 15px;">
+                        <h4 id="editing-filename" style="color: #38bdf8; margin-bottom: 5px;">Editing: filename</h4>
+                        <textarea id="file-content-area" rows="8" style="width: 100%; background: #090d16; color: #38bdf8; border: 1px solid #334155; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; box-sizing: border-box;"></textarea>
+                        <button class="action-btn" style="margin-top: 10px;" onclick="saveFileContent()">บันทึกไฟล์ (Save)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Software -->
             <div id="tab-software" class="tab-content" style="display: none;">
                 <div class="software-box">
                     <h3>จัดการซอฟต์แวร์และเวอร์ชัน</h3>
@@ -217,7 +244,7 @@
                 </div>
             </div>
 
-            <!-- Tab 4: Players -->
+            <!-- Tab 5: Players -->
             <div id="tab-players" class="tab-content" style="display: none;">
                 <div class="players-box">
                     <h3>จัดการผู้เล่น (Player Management)</h3>

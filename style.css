@@ -20,14 +20,11 @@ header {
     border-bottom: 1px solid #334155;
     padding-bottom: 10px;
 }
-.badge-sub {
-    font-size: 13px;
-    color: #94a3b8;
-}
+.badge-sub { font-size: 13px; color: #94a3b8; }
 span.offline { background: #ef4444; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
 span.online { background: #22c55e; padding: 4px 12px; border-radius: 20px; font-size: 14px; }
 
-/* หน้า Auth */
+/* Auth */
 .auth-box { margin-top: 20px; }
 .tab-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
 .tab-btn {
@@ -39,24 +36,31 @@ span.online { background: #22c55e; padding: 4px 12px; border-radius: 20px; font-
     width: 100%; background: #0f172a; border: 1px solid #334155; padding: 10px;
     border-radius: 6px; color: white; margin-bottom: 12px; box-sizing: border-box;
 }
-.action-btn {
-    width: 100%; background: #22c55e; color: white; border: none; padding: 10px;
-    border-radius: 6px; font-weight: bold; cursor: pointer;
+.action-btn { width: 100%; background: #22c55e; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+/* Server List Dashboard */
+.create-new-btn { background: #22c55e; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 13px; }
+.server-list-container { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.server-card-item {
+    background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 8px;
+    display: flex; justify-content: space-between; align-items: center; transition: 0.2s;
 }
+.server-card-item:hover { border-color: #38bdf8; }
+.server-card-info h3 { margin: 0 0 5px 0; color: #38bdf8; font-size: 16px; }
+.server-card-info p { margin: 0; font-size: 12px; color: #94a3b8; }
+.manage-server-btn { background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
 /* Wizard */
 .wizard-box { margin-top: 20px; }
 .option-cards { display: flex; gap: 15px; margin-top: 10px; }
 .card {
-    flex: 1; background: #0f172a; border: 2px solid #334155; padding: 15px;
-    border-radius: 8px; cursor: pointer; transition: 0.2s;
+    flex: 1; background: #0f172a; border: 2px solid #334155; padding: 15px; border-radius: 8px; cursor: pointer; transition: 0.2s;
 }
 .card:hover, .card.selected { border-color: #38bdf8; background: #111e38; }
 .card h4 { margin: 0 0 8px 0; color: #38bdf8; }
 .card p { margin: 0; font-size: 12px; color: #94a3b8; }
 .wizard-box select, .wizard-box input[type="text"] {
-    width: 100%; background: #0f172a; border: 1px solid #334155; padding: 10px;
-    border-radius: 6px; color: white; margin-top: 10px; box-sizing: border-box;
+    width: 100%; background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 6px; color: white; margin-top: 10px; box-sizing: border-box;
 }
 .specs-preview { background: #0f172a; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 13px; }
 .terms-group { display: flex; align-items: center; gap: 10px; margin-top: 15px; font-size: 13px; }
@@ -66,77 +70,46 @@ span.online { background: #22c55e; padding: 4px 12px; border-radius: 20px; font-
 #prev-btn { background: #334155; color: white; }
 
 /* Dashboard Navigation Tabs */
-.nav-tabs {
-    display: flex;
-    gap: 8px;
-    margin-top: 15px;
-    border-bottom: 1px solid #334155;
-    padding-bottom: 10px;
-}
-.nav-btn {
-    background: #0f172a;
-    border: 1px solid #334155;
-    color: #94a3b8;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 13px;
-}
-.nav-btn.active {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
-}
+.back-list-btn { background: none; border: none; color: #38bdf8; padding: 0; cursor: pointer; font-size: 12px; font-weight: bold; margin-bottom: 4px; }
+.nav-tabs { display: flex; gap: 8px; margin-top: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+.nav-btn { background: #0f172a; border: 1px solid #334155; color: #94a3b8; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.nav-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
 .tab-content { margin-top: 15px; }
 
 /* Server Tab & Metrics */
-.control-box, .console-box, .software-box, .players-box {
-    background: #162032;
-    padding: 15px;
-    border-radius: 8px;
-}
+.control-box, .console-box, .software-box, .players-box { background: #162032; padding: 15px; border-radius: 8px; }
 .specs-info { font-size: 13px; color: #94a3b8; margin-bottom: 10px; }
+.connection-box { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
+.connection-item { margin-bottom: 10px; }
+.connection-item:last-child { margin-bottom: 0; }
+.copy-row { display: flex; gap: 8px; margin-top: 4px; }
+.copy-row input { flex: 1; background: #1e293b; border: 1px solid #334155; padding: 6px 10px; border-radius: 6px; color: #38bdf8; font-family: monospace; font-size: 13px; }
+.copy-btn { background: #3b82f6; color: white; border: none; padding: 0 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+
 .metrics-container { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
 .metric-item { margin-bottom: 8px; font-size: 13px; }
 .metric-item:last-child { margin-bottom: 0; }
 .progress-bar { background: #334155; border-radius: 4px; height: 8px; width: 100%; margin-top: 4px; overflow: hidden; }
-.fill { height: 100%; width: 0%; background: #38bdf8; transition: width 0.4s ease; }
-.server-actions button {
-    padding: 10px 18px; margin-right: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;
-}
+.fill { height: 100%; width: 0%; background: #38bdf8; transition: width 0.3s ease; }
+.server-actions button { padding: 10px 18px; margin-right: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
 #start-btn { background: #22c55e; color: white; }
 #stop-btn { background: #ef4444; color: white; }
 .danger-btn { background: #f59e0b; color: white; }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Console Tab */
+/* Console */
 .console-box { background: #090d16; }
-#console-output {
-    height: 180px; overflow-y: auto; font-family: monospace; font-size: 13px;
-    color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin-bottom: 10px;
-}
+#console-output { height: 180px; overflow-y: auto; font-family: monospace; font-size: 13px; color: #38bdf8; border-bottom: 1px solid #1e293b; padding-bottom: 8px; margin-bottom: 10px; }
 .command-input-box { display: flex; gap: 8px; }
-.command-input-box input {
-    flex: 1; background: #1e293b; border: 1px solid #334155; padding: 8px 12px;
-    border-radius: 6px; color: white; font-family: monospace;
-}
-.command-input-box button {
-    background: #3b82f6; color: white; border: none; padding: 0 16px; border-radius: 6px; font-weight: bold; cursor: pointer;
-}
+.command-input-box input { flex: 1; background: #1e293b; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; color: white; font-family: monospace; }
+.command-input-box button { background: #3b82f6; color: white; border: none; padding: 0 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-/* Software Tab */
-.software-box select {
-    width: 100%; background: #0f172a; border: 1px solid #334155; padding: 10px;
-    border-radius: 6px; color: white; margin-top: 6px; box-sizing: border-box;
-}
+/* Software */
+.software-box select { width: 100%; background: #0f172a; border: 1px solid #334155; padding: 10px; border-radius: 6px; color: white; margin-top: 6px; box-sizing: border-box; }
 
-/* Players Tab */
+/* Players */
 .player-action-group { display: flex; gap: 10px; margin-top: 10px; }
-.player-action-group input {
-    flex: 1; background: #0f172a; border: 1px solid #334155; padding: 8px 12px;
-    border-radius: 6px; color: white;
-}
+.player-action-group input { flex: 1; background: #0f172a; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; color: white; }
 .p-buttons { display: flex; gap: 8px; }
 .op-btn { background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 .ban-btn { background: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; }
